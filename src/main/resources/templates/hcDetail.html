@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Housing Cooperative List</title>
+    <link rel="stylesheet" href="regStyle.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+</head>
+<body class="bckgd">
+<div class="mainPart">
+
+    <div class="list-group navDiv">
+        <a href="/main" class="list-group-item list-group-item-action">STRONA GŁÓWNA</a>
+        <a href="/allHousingCooperatives" class="list-group-item list-group-item-action active">LISTA WSPÓLNOT</a>
+        <a href="/allFlats" class="list-group-item list-group-item-action">LISTA MIESZKAŃ</a>
+        <a href="/allResidents" class="list-group-item list-group-item-action">LISTA MIESZKAŃCÓW</a>
+    </div>
+
+    <div class="articleDiv">
+        <h1 th:text="'Lista mieszkań wspólnoty: ' + ${hc.getName()}"></h1><br/>
+        <p th:text="'Liczba mieszkań: ' + ${flatsNo} + ' , suma powierzczni: ' + ${sumArea}"></p><br/>
+        <p th:text="'Ulica: ' + ${hc.getAdressStreet()} + ' , nr budynku: ' + ${hc.getAdressNo()}"></p><br/>
+        <p th:text="'Miasto: ' + ${hc.getCity().getPolishName()} + ', kod: ' + ${hc.getAdressCode()}"></p><br/>
+
+        <div class="form_part" id="accordion">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link add_button" data-toggle="collapse" data-target="#collapseOne"
+                                aria-expanded="true" aria-controls="collapseOne">Dodaj mieszkanie
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseOne" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
+                    <form class="card-body allform" method="post" action="/addFlat" th:object="${newFlat}">
+                        <h2 class="headerName">Formularz dodawania nowego mieszkania</h2><br/>
+
+                        <div class="form-group nameDiv">
+                            <label for="numberID">Numer mieszkania</label>
+                            <input class="form-control nameInput" id="numberID" type="text" name="number"
+                                   placeholder="Wpisz nr mieszkania"
+                                   autofocus th:field="*{flatNo}"/>
+                        </div>
+
+                        <div class="adressDiv">
+
+                            <div class="streetDiv">
+                                <label for="streetID">Powierzchnia mieszkania</label>
+                                <input class="form-control" id="streetID" required type="text" name="area"
+                                       pattern="[0-9]{1,}.[0-9]{0,2}"
+                                       title="Powierzchnia powinna zawierać max dwa miejsca po przecinku i powinien zostać wykorzystany znak kropki ."
+                                       placeholder="Wpisz powierznię mieszkania" th:field="*{flatArea}">
+                            </div>
+
+                            <div class="noDiv">
+                                <label hidden for="noID">Liczba mieszkańców</label>
+                                <input hidden class="form-control" id="noID" required type="number" value="0"
+                                       name="residentsNo"
+                                       placeholder="Wpisz liczbę mieszkańców" th:field="*{residentsNumber}">
+                            </div>
+
+                            <div class="cityDiv">
+                                <input hidden type="text" name="idHC" th:value="${hc.getIdHC()}"></input>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="buttonDiv">
+                            <input class="btn btn-primary" type="submit" value="Dodaj mieszkanie">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="table_part">
+            <table class="tb all_table">
+                <tr class="tb">
+                    <th class="tb" scope="col" align="center">ID</th>
+                    <th class="tb" scope="col" align="center">Nr mieszkania</th>
+                    <th class="tb" scope="col" align="center">Nazwa wspólnoty</th>
+                    <th class="tb" scope="col"></th>
+                </tr>
+                <tr class="tb" th:each="fl : ${allFlats}">
+                    <td class="tb" th:text="${fl.getIdF()}"></td>
+                    <td class="tb"><a th:href="'/flatDetail?idF=' + ${fl.getIdF()}"
+                                      th:text="${fl.getFlatNo()}"></a></td>
+                    <td class="tb" th:text="${fl.getHousingCooperative().getName()}"></td>
+                    <td class="tb"><a th:href="'/deleteF?idF=' + ${fl.getIdF()}">Skasuj</a></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

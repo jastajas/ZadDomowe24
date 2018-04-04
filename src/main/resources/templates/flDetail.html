@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Housing Cooperative List</title>
+    <link rel="stylesheet" href="regStyle.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+</head>
+<body class="bckgd">
+<div class="mainPart">
+
+    <div class="list-group navDiv">
+        <a href="/main" class="list-group-item list-group-item-action">STRONA GŁÓWNA</a>
+        <a href="/allHousingCooperatives" class="list-group-item list-group-item-action">LISTA WSPÓLNOT</a>
+        <a href="/allFlats" class="list-group-item list-group-item-action active">LISTA MIESZKAŃ</a>
+        <a href="/allResidents" class="list-group-item list-group-item-action">LISTA MIESZKAŃCÓW</a>
+    </div>
+
+
+    <div class="articleDiv">
+        <h1 th:text="'Lista mieszkańców mieszkania: ' + ${flat.getFlatNo()}"></h1>
+        <p th:text="'Wspólnoty: ' + ${flat.getHousingCooperative().getName()}"></p><br/>
+        <p th:text="'Liczba mieszkańców: ' + ${residentsNo}"></p><br/>
+        <p th:text="'Powierzchnia: ' + ${flat.getFlatArea()}"></p><br/>
+
+        <div class="form_part" id="accordion">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link add_button" data-toggle="collapse" data-target="#collapseOne"
+                                aria-expanded="true" aria-controls="collapseOne">Dodaj mieszkańca
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseOne" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
+                    <form class="card-body allform" method="post" action="/addResident" th:object="${newResident}">
+                        <h2 class="headerName">Formularz dodawania nowego mieszkańca</h2><br/>
+
+                        <div class="form-group nameDiv">
+                            <label for="nameID">Imię</label>
+                            <input class="form-control nameInput" id="nameID" type="text" name="name"
+                                   placeholder="Wpisz imię"
+                                   autofocus th:field="*{name}"/>
+                        </div>
+
+                        <div class="form-group nameDiv">
+                            <label for="surnameID">Nazwisko</label>
+                            <input class="form-control nameInput" id="surnameID" type="text" name="surname"
+                                   placeholder="Wpisz nazwisko"
+                                   autofocus th:field="*{surname}"/>
+
+                        </div>
+
+                        <div class="sexDiv">
+                            <label>Płeć</label>
+                            <div class="selectSex">
+                                <label><input th:each="sex : ${sexOption}" type="radio" name="sex"
+                                              th:value="${sex.name()}" th:field="*{sex}" th:text="${sex.getPolishSex()}"></label>
+                            </div>
+
+                        </div>
+
+                        <div class="cityDiv">
+                            <label hidden for="cityID">Nr mieszkania</label>
+                            <input hidden class="custom-select" id="cityID" name="idF" required th:value="${flat.getIdF()}"></input>
+                        </div>
+
+                        <br/>
+                        <div class="buttonDiv">
+                            <input class="btn btn-primary" type="submit" value="Dodaj mieszkańca">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="table_part">
+            <table class="tb all_table">
+                <tr class="tb">
+                    <th class="tb" scope="col" align="center">ID</th>
+                    <th class="tb" scope="col" align="center">Imię</th>
+                    <th class="tb" scope="col" align="center">Nazwisko</th>
+                    <th class="tb" scope="col"></th>
+                </tr>
+                <tr class="tb" th:each="res : ${allResidents}">
+                    <td class="tb" th:text="${res.getId()}"></td>
+                    <td class="tb"><a th:href="'/residentDetail?idR=' + ${res.getId()}"
+                                      th:text="${res.getName()}"></a></td>
+                    <td class="tb" th:text="${res.getSurname()}"></td>
+                    <td class="tb"><a th:href="'/deleteR?idR=' + ${res.getId()}">Skasuj</a></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

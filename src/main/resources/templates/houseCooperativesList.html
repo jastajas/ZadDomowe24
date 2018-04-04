@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Housing Cooperative List</title>
+    <link rel="stylesheet" href="regStyle.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+</head>
+<body class="bckgd">
+<div class="mainPart">
+
+    <div class="list-group navDiv">
+        <a href="/main" class="list-group-item list-group-item-action">STRONA GŁÓWNA</a>
+        <a href="/allHousingCooperatives" class="list-group-item list-group-item-action active">LISTA WSPÓLNOT</a>
+        <a href="/allFlats" class="list-group-item list-group-item-action">LISTA MIESZKAŃ</a>
+        <a href="/allResidents" class="list-group-item list-group-item-action">LISTA MIESZKAŃCÓW</a>
+    </div>
+
+
+    <div class="articleDiv">
+        <div class="add_button"><h1>LISTA WSPÓLNOT</h1></div>
+        <div class="form_part" id="accordion">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link add_button" data-toggle="collapse" data-target="#collapseOne"
+                                aria-expanded="true" aria-controls="collapseOne">Dodaj wspólnotę mieszkaniową
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseOne" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
+                    <form class="card-body allform" method="post" action="/addHouseCooperative" th:object="${newHC}">
+                        <h2 class="headerName">Formularz dodawania nowej wspólnoty</h2><br/>
+
+                        <div class="form-group nameDiv">
+                            <label for="nameID">Nazwa wspónoty</label>
+                            <input class="form-control nameInput" id="nameID" type="text" name="name"
+                                   placeholder="Wpisz nazwę wspólnoty"
+                                   autofocus th:field="*{name}"/>
+                        </div>
+
+                        <div class="adressDiv">
+
+                            <div class="streetDiv">
+                                <label for="streetID">Ulica</label>
+                                <input class="form-control" id="streetID" required type="text" name="street"
+                                       placeholder="Wpisz nazwę ulicy" th:field="*{adressStreet}">
+                            </div>
+
+                            <div class="noDiv">
+                                <label for="noID">Nr lokalu</label>
+                                <input class="form-control" id="noID" required type="text" name="street"
+                                       placeholder="Wpisz nr" th:field="*{adressNo}">
+                            </div>
+
+                            <div class="cityDiv">
+                                <label for="cityID">Miasto</label>
+                                <select class="custom-select" id="cityID" name="city" required
+                                        th:field="*{city}">
+                                    <option class="defaultCity" value="" selected data-default>Wybierz...</option>
+                                    <option th:each="cityEl : ${cities}" th:value="${cityEl.name()}" th:text="${cityEl.getPolishName()}"></option>
+                                </select>
+                            </div>
+                            <div class="postcodeDiv">
+                                <label>Kod pocztowy</label>
+                                <input class="form-control" type="text" pattern="[0-9]{2}-[0-9]{3}" required
+                                       placeholder="xx-xxx" th:field="*{adressCode}">
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="buttonDiv">
+                            <input class="btn btn-primary" type="submit" value="Dodaj wspólnotę">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="table_part">
+            <table class="tb all_table">
+                <tr class="tb">
+                    <th class="tb" scope="col" align="center">ID</th>
+                    <th class="tb" scope="col" align="center">Nazwa wspólnoty</th>
+                    <th class="tb" scope="col"></th>
+                </tr>
+                <tr class="tb" th:each="hc : ${hcl}">
+                    <td class="tb" th:text="${hc.getIdHC()}"></td>
+                    <td class="tb"><a th:href="'/houseCooperativeDetail?idHC=' + ${hc.getIdHC()}"
+                                      th:text="${hc.getName()}"></a></td>
+                    <td class="tb"><a th:href="'/deleteHC?idHC=' + ${hc.getIdHC()}">Skasuj</a></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
