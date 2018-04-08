@@ -93,12 +93,14 @@
                     <th class="tb" scope="col" align="center">ID</th>
                     <th class="tb" scope="col" align="center">Nazwa wspólnoty</th>
                     <th class="tb" scope="col"></th>
+                    <th class="tb" scope="col"></th>
                 </tr>
                 <tr class="tb" th:each="hc : ${hcl}">
                     <td class="tb" th:text="${hc.getIdHC()}"></td>
                     <td class="tb"><a th:href="'/houseCooperativeDetail?idHC=' + ${hc.getIdHC()}"
                                       th:text="${hc.getName()}"></a></td>
                     <td class="tb"><a th:href="'/deleteHC?idHC=' + ${hc.getIdHC()}">Skasuj</a></td>
+                    <td class="tb"><a th:href="'/hcModifyForm?idHC=' + ${hc.getIdHC()}">Modyfikuj</a></td>
                 </tr>
             </table>
         </div>

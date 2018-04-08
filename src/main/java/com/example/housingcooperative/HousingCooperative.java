@@ -11,16 +11,16 @@ public class HousingCooperative {
     private long idHC;
 
     private String name;
-    @Column(name = "street")
+
     private String adressStreet;
-    @Column(name = "number")
+
     private String adressNo;
-    @Column(name = "city")
-    @Enumerated
+
+    @Enumerated(EnumType.STRING)
     private City city;
-    @Column(name = "post_code")
+
     private String adressCode;
-    @OneToMany//(mappedBy = "flat")
+    @OneToMany(mappedBy = "housingCooperative")
     private List<Flat> flatList;
 
 

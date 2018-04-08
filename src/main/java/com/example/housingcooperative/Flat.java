@@ -16,7 +16,7 @@ public class Flat {
     @ManyToOne
     private HousingCooperative housingCooperative;
 
-    @OneToMany//(mappedBy = "resident")
+    @OneToMany(mappedBy = "flat")
     private List<Resident> residents;
 
     public long getIdF() {

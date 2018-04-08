@@ -55,15 +55,13 @@ public class HousingCooperativeController {
 
         List<Flat> flatList = fr.findAllByHousingCooperative_IdHC(idHC);
 
-        double sumArea = 0;
-        for (Flat flat : flatList) {
-            sumArea += flat.getFlatArea();
-        }
-
         Optional<HousingCooperative> hcOptional = hcr.findById(idHC);
+
 
         if (hcOptional.isPresent()) {
             HousingCooperative hc = hcOptional.get();
+
+            double sumArea = flatList.isEmpty() ? 0 : fr.sumFlatAreaByIdHC(hc);
 
             model.addAttribute("hc", hc);
             model.addAttribute("sumArea", sumArea);
@@ -76,6 +74,88 @@ public class HousingCooperativeController {
         }
 
         return "hcDetail";
+    }
+
+    @GetMapping("/deleteHC")
+    public String deleteHC(@RequestParam Long idHC) {
+
+        Optional<HousingCooperative> hcOptional = hcr.findById(idHC);
+        HousingCooperative hc = null;
+
+        if (hcOptional.isPresent()) {
+            hc = hcOptional.get();
+        }
+        boolean residentResidual = false;
+        List<Flat> flats = null;
+        if (hc != null) {
+            flats = fr.findAllByHousingCooperative_IdHC(hc.getIdHC());
+
+            for (Flat flat : flats) {
+                if (!rr.findAllByFlat_IdF(flat.getIdF()).isEmpty()) {
+                    residentResidual = true;
+                    System.out.println(flat.getIdF());
+                    break;
+                }
+            }
+        }
+
+        if (hc != null && !residentResidual) {
+            for (Flat flat : flats) {
+                fr.delete(flat);
+            }
+            hcr.delete(hc);
+        } else {
+            return "info";
+        }
+
+        return "redirect:/allHousingCooperatives";
+    }
+
+    @GetMapping("/hcModifyForm")
+    public String getModifyForm(@RequestParam Long idHC, Model model){
+
+        Optional<HousingCooperative> hcOptional = hcr.findById(idHC);
+        City [] cities = City.values();
+
+        if(hcOptional.isPresent()){
+            model.addAttribute("hcMod", hcOptional.get());
+            model.addAttribute("cities", cities);
+        } else {
+            return "redirect:/main";
+        }
+        return "hcModify";
+    }
+
+    @PostMapping("/hcModify")
+    public String modifyHC(@RequestParam Long idHC, @RequestParam String name, @RequestParam String street,
+                           @RequestParam String no, @RequestParam City city, @RequestParam String post){
+
+        Optional<HousingCooperative> hcOptional = hcr.findById(idHC);
+        HousingCooperative hc = null;
+
+        if (hcOptional.isPresent()) {
+            hc = hcOptional.get();
+        }
+
+        if(!name.equals("")){
+            hc.setName(name);
+        }
+        if(!street.equals("")){
+            hc.setAdressStreet(street);
+        }
+        if(!no.equals("")){
+            hc.setAdressNo(no);
+        }
+        if(city != null){
+            hc.setCity(city);
+        }
+        if(!post.equals("")){
+            hc.setAdressCode(post);
+        }
+
+        hcr.save(hc);
+
+       return "redirect:/houseCooperativeDetail?idHC=" + hc.getIdHC();
     }
 
     @GetMapping("/flatDetail")
@@ -127,40 +207,6 @@ public class HousingCooperativeController {
         return "redirect:/allFlats";
     }
 
-    @GetMapping("/deleteHC")
-    public String deleteHC(@RequestParam Long idHC) {
-
-        Optional<HousingCooperative> hcOptional = hcr.findById(idHC);
-        HousingCooperative hc = null;
-
-        if (hcOptional.isPresent()) {
-            hc = hcOptional.get();
-        }
-        boolean residentResidual = false;
-        List<Flat> flats = null;
-        if (hc != null) {
-            flats = fr.findAllByHousingCooperative_IdHC(hc.getIdHC());
-
-            for (Flat flat : flats) {
-                if (!rr.findAllByFlat_IdF(flat.getIdF()).isEmpty()) {
-                    residentResidual = true;
-                    System.out.println(flat.getIdF());
-                    break;
-                }
-            }
-        }
-
-        if (hc != null && !residentResidual) {
-            for (Flat flat : flats) {
-                fr.delete(flat);
-            }
-            hcr.delete(hc);
-        } else {
-            return "info";
-        }
-
-        return "redirect:/allHousingCooperatives";
-    }
 
     @GetMapping("/deleteF")
     public String deleteFlat(@RequestParam Long idF) {

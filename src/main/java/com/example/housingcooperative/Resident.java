@@ -10,7 +10,7 @@ public class Resident {
     private long idR;
     private String name;
     private String surname;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Sex sex;
     @ManyToOne
     private Flat flat;
