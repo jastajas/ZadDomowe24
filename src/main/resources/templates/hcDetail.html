@@ -90,6 +90,7 @@
                     <th class="tb" scope="col" align="center">Nr mieszkania</th>
                     <th class="tb" scope="col" align="center">Nazwa wspólnoty</th>
                     <th class="tb" scope="col"></th>
+                    <th class="tb" scope="col"></th>
                 </tr>
                 <tr class="tb" th:each="fl : ${allFlats}">
                     <td class="tb" th:text="${fl.getIdF()}"></td>
@@ -97,6 +98,7 @@
                                       th:text="${fl.getFlatNo()}"></a></td>
                     <td class="tb" th:text="${fl.getHousingCooperative().getName()}"></td>
                     <td class="tb"><a th:href="'/deleteF?idF=' + ${fl.getIdF()}">Skasuj</a></td>
+                    <td class="tb"><a th:href="'/flatModifyForm?idF=' + ${fl.getIdF()}">Modyfikuj</a></td>
                 </tr>
             </table>
         </div>

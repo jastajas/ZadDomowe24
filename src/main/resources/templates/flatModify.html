@@ -39,68 +39,54 @@
                     </h5>
                 </div>
 
-                <div id="collapseOne" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
-                    <form class="card-body allform" method="post" action="/addFlat" th:object="${newFlat}">
-                        <h2 class="headerName">Formularz dodawania nowego mieszkania</h2><br/>
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                    <form class="card-body allform" method="post" action="/flatModify" th:object="${flatMod}">
+                        <h2 class="headerName">Formularz edycji mieszkania</h2><br/>
 
                         <div class="form-group nameDiv">
                             <label for="numberID">Numer mieszkania</label>
                             <input class="form-control nameInput" id="numberID" type="text" name="number"
-                                   placeholder="Wpisz nr mieszkania"
-                                   autofocus th:field="*{flatNo}"/>
+                                   th:value="${flatMod.getFlatNo()}" autofocus th:field="*{flatNo}"/>
                         </div>
 
                         <div class="adressDiv">
 
                             <div class="streetDiv">
                                 <label for="streetID">Powierzchnia mieszkania</label>
-                                <input class="form-control" id="streetID" required type="text" name="area" pattern="[0-9]{1,}.[0-9]{0,2}"
+                                <input class="form-control" id="streetID" required type="text" name="area"
+                                       pattern="[0-9]{1,}.[0-9]{0,2}"
                                        title="Powierzchnia powinna zawierać max dwa miejsca po przecinku i powinien zostać wykorzystany znak kropki ."
-                                       placeholder="Wpisz powierznię mieszkania" th:field="*{flatArea}">
+                                       th:field="*{flatArea}" th:value="${flatMod.getFlatArea()}">
                             </div>
 
                             <div class="noDiv">
                                 <label hidden for="noID">Liczba mieszkańców</label>
-                                <input hidden class="form-control" id="noID" required type="number" value="0" name="residentsNo"
-                                       placeholder="Wpisz liczbę mieszkańców" th:field="*{residentsNumber}">
+                                <input hidden class="form-control" id="noID" required type="number" name="residentsNo"
+                                       th:field="*{residentsNumber}" th:value="${flatMod.getResidentsNumber()}">
                             </div>
 
                             <div class="cityDiv">
                                 <label for="cityID">Wspólnota mieszkaniowa</label>
                                 <select class="custom-select" id="cityID" name="idHC" required>
-                                    <option class="defaultCity" value="" selected data-default>Wybierz...</option>
-                                    <option th:each="hc : ${hcList}" th:value="${hc.getIdHC()}" th:text="${hc.name}"></option>
+                                    <option class="defaultCity" th:value="${flatMod.getHousingCooperative().getIdHC()}"
+                                            th:text="${flatMod.getHousingCooperative().getName()}" selected
+                                            data-default></option>
+                                    <option th:each="hc : ${hcList}" th:value="${hc.getIdHC()}"
+                                            th:text="${hc.getName()}"></option>
                                 </select>
                             </div>
-                        </div>
-                        <br/>
-                        <div class="buttonDiv">
-                            <input class="btn btn-primary" type="submit" value="Dodaj mieszkanie">
+                            <input hidden type="number" name="idF" th:value="${flatMod.getIdF()}">
+
+                            <br/>
+                            <div class="buttonDiv">
+                                <input class="btn btn-primary" type="submit" value="Zmień mieszkanie">
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <div class="table_part">
-            <table class="tb all_table">
-                <tr class="tb">
-                    <th class="tb" scope="col" align="center">ID</th>
-                    <th class="tb" scope="col" align="center">Nr mieszkania</th>
-                    <th class="tb" scope="col" align="center">Nazwa wspólnoty</th>
-                    <th class="tb" scope="col"></th>
-                    <th class="tb" scope="col"></th>
-                </tr>
-                <tr class="tb" th:each="fl : ${flats}">
-                    <td class="tb" th:text="${fl.getIdF()}"></td>
-                    <td class="tb"><a th:href="'/flatDetail?idF=' + ${fl.getIdF()}"
-                                      th:text="${fl.getFlatNo()}"></a></td>
-                    <td class="tb" th:text="${fl.getHousingCooperative().getName()}"></td>
-                    <td class="tb"><a th:href="'/deleteF?idF=' + ${fl.getIdF()}">Skasuj</a></td>
-                    <td class="tb"><a th:href="'/flatModifyForm?idF=' + ${fl.getIdF()}">Modyfikuj</a></td>
-                </tr>
-            </table>
-        </div>
 
     </div>
 </div>

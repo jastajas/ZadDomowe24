@@ -2,10 +2,7 @@ package com.example.housingcooperative;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +42,15 @@ public class HousingCooperativeController {
     }
 
     @PostMapping("/addHouseCooperative")
-    public String addHouseCooperative(HousingCooperative hc) {
+    public String addHouseCooperative(@RequestParam(required = false) Long idHC,
+                                      HousingCooperative hc, @RequestParam(required = false) String name) {
+
+        if (name.equals("")) {
+            hc.setName(hc.getAdressStreet() + " " + hc.getAdressNo());
+        }
+        if (idHC != null) {
+            hc.setId(idHC);
+        }
         hcr.save(hc);
         return "redirect:/allHousingCooperatives";
     }
@@ -112,50 +117,18 @@ public class HousingCooperativeController {
     }
 
     @GetMapping("/hcModifyForm")
-    public String getModifyForm(@RequestParam Long idHC, Model model){
+    public String getModifyForm(@RequestParam Long idHC, Model model) {
 
         Optional<HousingCooperative> hcOptional = hcr.findById(idHC);
-        City [] cities = City.values();
+        City[] cities = City.values();
 
-        if(hcOptional.isPresent()){
+        if (hcOptional.isPresent()) {
             model.addAttribute("hcMod", hcOptional.get());
             model.addAttribute("cities", cities);
         } else {
             return "redirect:/main";
         }
         return "hcModify";
-    }
-
-    @PostMapping("/hcModify")
-    public String modifyHC(@RequestParam Long idHC, @RequestParam String name, @RequestParam String street,
-                           @RequestParam String no, @RequestParam City city, @RequestParam String post){
-
-        Optional<HousingCooperative> hcOptional = hcr.findById(idHC);
-        HousingCooperative hc = null;
-
-        if (hcOptional.isPresent()) {
-            hc = hcOptional.get();
-        }
-
-        if(!name.equals("")){
-            hc.setName(name);
-        }
-        if(!street.equals("")){
-            hc.setAdressStreet(street);
-        }
-        if(!no.equals("")){
-            hc.setAdressNo(no);
-        }
-        if(city != null){
-            hc.setCity(city);
-        }
-        if(!post.equals("")){
-            hc.setAdressCode(post);
-        }
-
-        hcr.save(hc);
-
-       return "redirect:/houseCooperativeDetail?idHC=" + hc.getIdHC();
     }
 
     @GetMapping("/flatDetail")
@@ -227,6 +200,36 @@ public class HousingCooperativeController {
 
         return "redirect:/allFlats";
     }
+
+    @GetMapping("/flatModifyForm")
+    public String getModifyFormFlat(@RequestParam Long idF, Model model) {
+
+        Optional<Flat> flatOptional = fr.findById(idF);
+        List<HousingCooperative> hcList = hcr.findAll();
+
+        if (flatOptional.isPresent()) {
+            model.addAttribute("flatMod", flatOptional.get());
+            model.addAttribute("hcList", hcList);
+        } else {
+            return "redirect:/main";
+        }
+        return "flatModify";
+    }
+
+    @PostMapping("/flatModify")
+    public String modifyHC(@RequestParam Long idF, @RequestParam Long idHC, Flat flat) {
+
+        flat.setIdF(idF);
+
+        Optional<HousingCooperative> optionalHC = hcr.findById(idHC);
+        if (optionalHC.isPresent()){
+            flat.setHousingCooperative(optionalHC.get());
+            fr.save(flat);
+            return "redirect:/flatDetail?idF="+ idF;
+        }
+        return "redirect:/main";
+    }
+
 
     @RequestMapping("/allResidents")
     public String showResidentsList(Model model) {

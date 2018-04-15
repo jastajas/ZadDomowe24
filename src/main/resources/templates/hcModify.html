@@ -40,46 +40,42 @@
                 </div>
 
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                    <form class="card-body allform" method="post" action="/hcModify">
+                    <form class="card-body allform" method="post" action="/addHouseCooperative" th:object="${hcMod}">
                         <h2 class="headerName">Formularz modyfikowania danych wspólnoty</h2><br/>
 
                         <div class="form-group nameDiv">
-                            <label for="nameID" th:text="'Nazwa wspónoty (aktualna: ' + ${hcMod.getName()} + ')'"></label>
+                            <label for="nameID">Nazwa wspólnoty</label>
                             <input class="form-control nameInput" id="nameID" type="text" name="name"
-                                   placeholder="Wpisz nową nazwę wspólnoty"
+                                   th:value="${hcMod.getName()}" th:field="*{name}"
                                    autofocus/>
+                        </div>
+                        <div class="form-group nameDiv">
+                            <label for="streetID">Ulica</label>
+                            <input class="form-control" id="streetID" type="text" name="street"
+                                   th:value="${hcMod.getAdressStreet()}" required th:field="*{adressStreet}">
+                        </div>
+                        <div>
+                            <label for="noID">Nr budynku</label>
+                            <input class="form-control" id="noID" type="text" name="no"
+                                   th:value="${hcMod.getAdressNo()}" required th:field="*{adressNo}">
+                        </div>
+                        <div>
+                            <label for="cityID">Miasto</label>
+                            <select class="custom-select" id="cityID" name="city" required th:field="*{city}">
+                                <option class="defaultCity" th:value="${hcMod.getCity().name()}"
+                                        th:text="${hcMod.getCity().getPolishName()}" selected data-default></option>
+                                <option th:each="cityEl : ${cities}" th:value="${cityEl.name()}"
+                                        th:text="${cityEl.getPolishName()}"></option>
+                            </select>
                         </div>
 
                         <div>
-
-                            <div>
-                                <label for="streetID" th:text="'Nazwa ulicy (aktualna: ' + ${hcMod.getAdressStreet()} + ')'"></label>
-                                <input class="form-control" id="streetID" type="text" name="street"
-                                       placeholder="Wpisz nową nazwę ulicy">
-                            </div>
-
-                            <div>
-                                <label for="noID" th:text="'Nr lokalu (aktualny: ' + ${hcMod.getAdressNo()} + ')'"></label>
-                                <input class="form-control" id="noID" type="text" name="no"
-                                       placeholder="Wpisz nowy nr">
-                            </div>
-
-                            <div>
-                                <label for="cityID"th:text="'Miasto (aktualne: ' + ${hcMod.getCity().getPolishName()} + ')'"></label>
-                                <select class="custom-select" id="cityID" name="city">
-                                    <option class="defaultCity" value="" selected data-default>Wybierz...</option>
-                                    <option th:each="cityEl : ${cities}" th:value="${cityEl.name()}" th:text="${cityEl.getPolishName()}"></option>
-                                </select>
-                            </div>
-                            <div>
-                                <label th:text="'Kod pocztowy (aktualne: ' + ${hcMod.getAdressCode()} + ')'"></label>
-                                <input class="form-control" type="text" pattern="[0-9]{2}-[0-9]{3}" name="post"
-                                       placeholder="xx-xxx">
-                            </div>
-
-                            <input hidden type="number" name="idHC" th:value="${hcMod.getIdHC()}">
-
+                            <label>Kod Pocztowy</label>
+                            <input class="form-control" type="text" pattern="[0-9]{2}-[0-9]{3}" name="post"
+                                   th:value="${hcMod.getAdressCode()}" required th:field="*{adressCode}">
                         </div>
+
+                        <input hidden type="number" name="idF" th:value="${hcMod.getIdHC()}" th:field="*{idHC}">
                         <br/>
                         <div class="buttonDiv">
                             <input class="btn btn-primary" type="submit" value="Zmodyfikuj wspólnotę">
