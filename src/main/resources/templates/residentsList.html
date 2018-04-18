@@ -93,6 +93,7 @@
                     <th class="tb" scope="col" align="center">Nr mieszkania</th>
                     <th class="tb" scope="col" align="center">Nazwa wspólnoty</th>
                     <th class="tb" scope="col"></th>
+                    <th class="tb" scope="col"></th>
                 </tr>
                 <tr class="tb" th:each="res : ${residents}">
                     <td class="tb" th:text="${res.getId()}"></td>
@@ -102,6 +103,7 @@
                     <td class="tb" th:text="${res.getFlat().getFlatNo()}"></td>
                     <td class="tb" th:text="${res.getFlat().getHousingCooperative().getName()}"></td>
                     <td class="tb"><a th:href="'/deleteR?idR=' + ${res.getId()}">Skasuj</a></td>
+                    <td class="tb"><a th:href="'/residentModForm?id=' + ${res.getId()}">Edytuj</a></td>
                 </tr>
             </table>
         </div>

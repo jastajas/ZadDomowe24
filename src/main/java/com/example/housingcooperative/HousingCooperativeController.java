@@ -292,4 +292,44 @@ public class HousingCooperativeController {
 
         return "redirect:/allResidents";
     }
+
+    @GetMapping("/residentModForm")
+    public String modifyForm(@RequestParam Long id, Model model){
+        Optional<Resident> modifyResident = rr.findById(id);
+
+        if (modifyResident.isPresent()){
+            model.addAttribute("newResident", modifyResident.get());
+            model.addAttribute("sexOption",Sex.values());
+            model.addAttribute("flatsList",fr.findAll());
+        }
+        return "rModify";
+    }
+
+    @PostMapping("/residentModify")
+    public String modifyResident(@RequestParam Long idF, Resident resident){
+
+        Optional<Resident> peviousResident = rr.findById(resident.getId());
+        if (!peviousResident.isPresent()){
+            return "index";
+        }
+        Flat previousFlat =  peviousResident.get().getFlat();
+
+        Optional<Flat> requestedFlat = fr.findById(idF);
+
+        if (!requestedFlat.isPresent()){
+            return "index";
+        }
+
+        if(requestedFlat.get().getIdF() != previousFlat.getIdF()){
+            previousFlat.setResidentsNumber(previousFlat.getResidentsNumber()-1);
+            fr.save(previousFlat);
+            requestedFlat.get().setResidentsNumber(requestedFlat.get().getResidentsNumber()+1);
+            fr.save(requestedFlat.get());
+        }
+        resident.setFlat(requestedFlat.get());
+
+        rr.save(resident);
+
+        return "redirect:/residentDetail?idR=" + resident.getId();
+    }
 }
